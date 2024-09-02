@@ -6,7 +6,7 @@ import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType.Primitive
 @Serializable
 data class User(private val id: String,
                 private var name: String,
-                private var lastName: String,
+                private var username: String,
                 private val email: String,
                 private val password: String)
 {
@@ -15,7 +15,7 @@ data class User(private val id: String,
             val user = User(
                 primitives["id"] as String,
                 primitives["name"] as String,
-                primitives["lastName"] as String,
+                primitives["username"] as String,
                 primitives["email"] as String,
                 primitives["password"] as String
             );
@@ -28,16 +28,16 @@ data class User(private val id: String,
         return this.id;
     }
 
-    fun update(name: String, lastName: String) {
+    fun update(name: String, username: String) {
         this.name = name;
-        this.lastName = lastName;
+        this.username = username;
     }
 
     fun toPrimitives(): Map<String, String> {
         return mapOf(
             "id" to this.id,
             "name" to this.name,
-            "lastName" to this.lastName,
+            "username" to this.username,
             "email" to this.email,
             "password" to this.password
         )
