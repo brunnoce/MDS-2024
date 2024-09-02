@@ -3,19 +3,19 @@ package utn.methodology.domain.entities
 import kotlinx.serialization.Serializable
 import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType.Primitive
 
-//@Serializable
+@Serializable
 data class User(private val id: String,
                 private var name: String,
                 private var lastName: String,
                 private val email: String,
                 private val password: String)
 {
-    companion object {
+   companion object {
         fun fromPrimitives(primitives: Map<String, String>): User {
             val user = User(
                 primitives["id"] as String,
                 primitives["name"] as String,
-                primitives["surname"] as String,
+                primitives["lastName"] as String,
                 primitives["email"] as String,
                 primitives["password"] as String
             );

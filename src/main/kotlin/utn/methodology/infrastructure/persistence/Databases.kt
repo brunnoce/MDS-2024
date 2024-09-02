@@ -26,12 +26,18 @@ fun Application.configureDatabases() {
      */
 }
     fun Application.connectToMongoDB(): MongoDatabase {
-        val user = environment.config.tryGetString("db.mongo.user")
+        /*val user = environment.config.tryGetString("db.mongo.user")
         val password = environment.config.tryGetString("db.mongo.password")
         val host = environment.config.tryGetString("db.mongo.host") ?: "127.0.0.1"
         val port = environment.config.tryGetString("db.mongo.port") ?: "27017"
         val maxPoolSize = environment.config.tryGetString("db.mongo.maxPoolSize")?.toInt() ?: 20
-        val databaseName = environment.config.tryGetString("db.mongo.database.name") ?: "myDatabase"
+        val databaseName = environment.config.tryGetString("db.mongo.database.name") ?: "myDatabase"*/
+        val user = environment.config.tryGetString("sa")
+        val password = environment.config.tryGetString("sa")
+        val host = environment.config.tryGetString("27017") ?: "127.0.0.1"
+        val port = environment.config.tryGetString("8081") ?: "27017"
+        val maxPoolSize = environment.config.tryGetString("db.mongo.maxPoolSize")?.toInt() ?: 20
+        val databaseName = environment.config.tryGetString("users") ?: "myDatabase"
 
         val credentials = user?.let { userVal -> password?.let { passwordVal -> "$userVal:$passwordVal@" } }.orEmpty()
 

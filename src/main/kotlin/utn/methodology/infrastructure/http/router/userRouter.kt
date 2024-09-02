@@ -35,7 +35,9 @@ fun Application.userRouter() {
     //val deleteUserAction = DeleteUserAction(DeleteUserHandler(userMongoUserRepository))
 
     routing {
-
+        get("/") {
+            call.respondText("Hello, world!")
+        }
         post("/users") {
             val body = call.receive<CreateUserCommand>()
             createUserAction.execute(body);

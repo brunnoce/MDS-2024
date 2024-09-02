@@ -7,19 +7,21 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.engine.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import org.slf4j.LoggerFactory
+
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
 fun Application.errorHandler() {
     install(StatusPages) {
-        exception<Throwable> { call, cause ->
+       exception<Throwable> { call, cause ->
             logError(call, cause)
 
             if (cause is NotFoundException) {
@@ -39,10 +41,10 @@ fun Application.module() {
             enable(SerializationFeature.INDENT_OUTPUT)
         }
     }
-
+    errorHandler()
     configureDatabases()
     userRouter()
-    errorHandler()
+
 }
 
 
