@@ -44,7 +44,6 @@ class MongoUserRepository(private val database: MongoDatabase) {
         }
     }
 
-    // Nuevo método para buscar por username parcial
     fun findByUsernameContains(query: String): List<User> {
         val regex = ".*${query.lowercase()}.*".toRegex(RegexOption.IGNORE_CASE)
         val filter = Document("username", Document("\$regex", regex.pattern).append("\$options", "i"))

@@ -20,7 +20,4 @@ class CreateUserHandler(
 
         userRepository.save(user)
     }
-
-
 }
-

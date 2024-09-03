@@ -17,4 +17,5 @@ data class CreateUserCommand(
 
         return this;
     }
+
 }

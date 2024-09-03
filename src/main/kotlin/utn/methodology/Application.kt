@@ -47,8 +47,6 @@ fun Application.module() {
 
 }
 
-
-
 fun logError(call: ApplicationCall, cause: Throwable) {
     val log = LoggerFactory.getLogger("ErrorLogger")
     val requestUri = call.request.uri

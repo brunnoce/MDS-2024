@@ -23,7 +23,6 @@ data class User(
         }
     }
 
-
     fun getId(): String {
         return this.id;
     }
