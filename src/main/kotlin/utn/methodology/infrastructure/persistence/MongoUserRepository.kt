@@ -5,48 +5,48 @@ import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.UpdateOptions
 import org.bson.Document
 import utn.methodology.domain.entities.User
+import com.mongodb.client.model.Filters.eq
 
 class MongoUserRepository(private val database: MongoDatabase) {
-    private var collection: MongoCollection<Any>;
-
-    init {
-        collection = database.getCollection("users") as MongoCollection<Any>;
-    }
+    private val collection: MongoCollection<Document> = database.getCollection("users")
 
     fun save(user: User) {
-        val options = UpdateOptions().upsert(true);
+        val options = UpdateOptions().upsert(true)
 
-        val filter = Document("_id", user.getId()) // Usa el campo id como filter
+        val filter = Document("_id", user.getId()) // Usa el campo id como filtro
         val update = Document("\$set", user.toPrimitives())
 
         collection.updateOne(filter, update, options)
     }
 
     fun findOne(id: String): User? {
-        val filter = Document("_id", id);
+        val filter = Document("_id", id)
+        val document = collection.find(filter).firstOrNull()
 
-        val primitives = collection.find(filter).firstOrNull();
-
-        if (primitives == null) {
-            return null;
+        return document?.let {
+            User.fromPrimitives(it.toMap() as Map<String, String>)
         }
-
-        return User.fromPrimitives(primitives as Map<String, String>)
     }
 
     fun findAll(): List<User> {
+        val documents = collection.find().toList()
 
-        val primitives = collection.find().map { it as Document }.toList();
-
-        return primitives.map {
+        return documents.map {
             User.fromPrimitives(it.toMap() as Map<String, String>)
-        };
+        }
+    }
+
+    fun findByUsername(username: String): User? {
+        val filter = Document("username", username)
+        val document = collection.find(filter).firstOrNull()
+
+        return document?.let {
+            User.fromPrimitives(it.toMap() as Map<String, String>)
+        }
     }
 
     fun delete(user: User) {
-        val filter = Document("_id", user.getId());
-
+        val filter = Document("_id", user.getId())
         collection.deleteOne(filter)
     }
-
 }
