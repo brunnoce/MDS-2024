@@ -1,4 +1,4 @@
-# Ktor Project - Docker Setup
+# MDS-2024 Project - README
 
 Este proyecto utiliza Docker para facilitar la configuración y ejecución del entorno de desarrollo. Todo lo que necesitas está definido en el archivo `docker-compose.yml`.
 
