@@ -1,0 +1,134 @@
+/.idea/.gitignore
+/.idea/.name
+/data/mongo/.mongodb/mongosh/66d2a19b1796332b755e739b_log
+/data/mongo/.mongodb/mongosh/66d2a19d71bd56f4295e739b_log
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/.mongodb/mongosh/66d6083b628b028a972beedd_log
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/.mongodb/mongosh/66d608338cdae576ee304f6b_log
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/.mongodb/mongosh/66d608357f4b15afb64f240a_log
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/_mdb_catalog.wt
+/data/mongo/_mdb_catalog.wt
+/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+/.gradle/buildOutputCleanup/cache.properties
+/.gradle/8.4/checksums/checksums.lock
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/collection-0-1802597544537911888.wt
+/data/mongo/collection-0--2004918725913808531.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/collection-0--2505677043156346849.wt
+/data/mongo/collection-2--2004918725913808531.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/collection-2--2505677043156346849.wt
+/data/mongo/collection-4--2004918725913808531.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/collection-4--2505677043156346849.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/collection-7--2505677043156346849.wt
+/.idea/compiler.xml
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/.mongodb/mongosh/config
+/data/mongo/.mongodb/mongosh/config
+/build/classes/kotlin/main/utn/methodology/infrastructure/http/actions/CreateUserAction.class
+/build/classes/kotlin/main/utn/methodology/application/commands/CreateUserCommand$$serializer.class
+/build/classes/kotlin/main/utn/methodology/application/commands/CreateUserCommand$Companion.class
+/build/classes/kotlin/main/utn/methodology/application/commands/CreateUserCommand.class
+/build/classes/kotlin/main/utn/methodology/application/commandhandlers/CreateUserHandler.class
+/.gradle/8.4/dependencies-accessors/dependencies-accessors.lock
+/.gradle/8.4/executionHistory/executionHistory.bin
+/.gradle/8.4/executionHistory/executionHistory.lock
+/.gradle/file-system.probe
+/.gradle/8.4/fileHashes/fileHashes.bin
+/.gradle/8.4/fileHashes/fileHashes.lock
+/.gradle/8.4/dependencies-accessors/gc.properties
+/.gradle/8.4/gc.properties
+/.gradle/vcs-1/gc.properties
+/.idea/gradle.xml
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/.mongodb/mongosh/snippets/index.bson.br
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/index-1-1802597544537911888.wt
+/data/mongo/index-1--2004918725913808531.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/index-1--2505677043156346849.wt
+/data/mongo/index-3--2004918725913808531.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/index-3--2505677043156346849.wt
+/data/mongo/index-5--2004918725913808531.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/index-5--2505677043156346849.wt
+/data/mongo/index-6--2004918725913808531.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/index-6--2505677043156346849.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/index-8--2505677043156346849.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/index-9--2505677043156346849.wt
+/.idea/jarRepositories.xml
+/.idea/kotlinc.xml
+/.gradle/8.4/fileChanges/last-build.bin
+/data/mongo/diagnostic.data/metrics.2024-08-31T04-52-41Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T04-53-00Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T04-59-31Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T05-15-17Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T05-22-53Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T05-28-35Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T05-48-31Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T05-55-28Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T06-07-53Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T17-14-32Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T17-25-13Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T17-30-38Z-00000
+/data/mongo/diagnostic.data/metrics.2024-08-31T17-39-59Z-00000
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/diagnostic.data/metrics.2024-09-02T18-47-14Z-00000
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/diagnostic.data/metrics.2024-09-02T18-47-43Z-00000
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/diagnostic.data/metrics.2024-09-02T21-52-09Z-00000
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/diagnostic.data/metrics.interim
+/.idea/misc.xml
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/mongod.lock
+/data/mongo/mongod.lock
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/.mongodb/mongosh/mongosh_repl_history
+/build/classes/kotlin/main/utn/methodology/infrastructure/persistence/MongoUserRepository.class
+/.gradle/buildOutputCleanup/outputFiles.bin
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/.mongodb/mongosh/snippets/package.json
+/.gradle/8.4/fileHashes/resourceHashesCache.bin
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/sizeStorer.wt
+/data/mongo/sizeStorer.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/storage.bson
+/data/mongo/storage.bson
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i
+/build/kotlin/compileKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len
+/.idea/uiDesigner.xml
+/build/classes/kotlin/main/utn/methodology/domain/entities/User$$serializer.class
+/build/classes/kotlin/main/utn/methodology/domain/entities/User$Companion.class
+/build/classes/kotlin/main/utn/methodology/domain/entities/User.class
+/build/classes/kotlin/main/utn/methodology/infrastructure/http/router/UserRouterKt$userRouter$1$1.class
+/build/classes/kotlin/main/utn/methodology/infrastructure/http/router/UserRouterKt$userRouter$1$2.class
+/build/classes/kotlin/main/utn/methodology/infrastructure/http/router/UserRouterKt$userRouter$1$3.class
+/build/classes/kotlin/main/utn/methodology/infrastructure/http/router/UserRouterKt.class
+/.idea/vcs.xml
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/WiredTiger
+/data/mongo/WiredTiger
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/WiredTiger.lock
+/data/mongo/WiredTiger.lock
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/WiredTiger.turtle
+/data/mongo/WiredTiger.turtle
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/WiredTiger.wt
+/data/mongo/WiredTiger.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/WiredTigerHS.wt
+/data/mongo/WiredTigerHS.wt
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/journal/WiredTigerLog.0000000003
+/data/mongo/journal/WiredTigerLog.0000000056
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/journal/WiredTigerPreplog.0000000001
+/C/Users/matim/Desktop/2do año PROGRAMACIÓN/MET DE SISTEMAS/MDS-2024/data/mongo/journal/WiredTigerPreplog.0000000002
+/data/mongo/journal/WiredTigerTmplog.0000000001
