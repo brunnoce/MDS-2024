@@ -10,10 +10,10 @@ data class CreateUserCommand(
     val password: String
 ) {
     fun validate(): CreateUserCommand {
-        checkNotNull(name) { throw IllegalArgumentException("Name must be defined") }
-        checkNotNull(username) { throw IllegalArgumentException("Username must be defined") }
-        checkNotNull(email) { throw IllegalArgumentException("Email must be defined") }
-        checkNotNull(password) { throw IllegalArgumentException("Password must be defined") }
+        checkNotNull(name) { throw IllegalArgumentException("Name debe estar definido") }
+        checkNotNull(username) { throw IllegalArgumentException("Username debe estar definido") }
+        checkNotNull(email) { throw IllegalArgumentException("Email debe estar definido") }
+        checkNotNull(password) { throw IllegalArgumentException("Password debe estar definido") }
 
         return this;
     }

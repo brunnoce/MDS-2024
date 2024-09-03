@@ -10,14 +10,12 @@ class FindUserByUsernameHandler(
 
     fun handle(query: FindUserByUsernameQuery): Map<String, String> {
 
-        // Encuentra al usuario por el username
         val user = userRepository.findByUsername(query.username)
 
         if (user == null) {
-            throw NotFoundException("User with username: ${query.username} not found")
+            throw NotFoundException("Usuario con username: ${query.username} no encontrado")
         }
 
-        // Asumiendo que `user` es una lista, seleccionamos el primer resultado
         return user.toPrimitives()
     }
 }

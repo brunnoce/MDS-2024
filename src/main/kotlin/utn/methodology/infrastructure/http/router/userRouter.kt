@@ -36,24 +36,34 @@ fun Application.userRouter() {
 
         get("/users") {
             val username = call.request.queryParameters["username"]
+
             if (username != null) {
-                // Handle search by username
+                if (username.isBlank()) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "El username no puede estar en blanco"))
+                    return@get
+                }
                 try {
                     val query = FindUserByUsernameQuery(username).validate()
                     val result = findUserByUsernameAction.execute(query)
-                    call.respond(HttpStatusCode.OK, result)
+
+                    if (result.isEmpty()) {
+                        call.respond(HttpStatusCode.NotFound, mapOf("error" to "No se encontró el siguiente username: $username"))
+                    } else {
+                        call.respond(HttpStatusCode.OK, result)
+                    }
+                } catch (e: IllegalArgumentException) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to e.localizedMessage))
                 } catch (e: Exception) {
-                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to e.localizedMessage))
+                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Error inesperado: ${e.localizedMessage}"))
                     println("Error al buscar el usuario por username: ${e.localizedMessage}")
                     e.printStackTrace()
                 }
             } else {
-                // Handle fetch all users if no username is provided
                 try {
                     val users = userMongoUserRepository.findAll()
                     call.respond(HttpStatusCode.OK, users.map { it.toPrimitives() })
                 } catch (e: Exception) {
-                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to e.localizedMessage))
+                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Error inesperado: ${e.localizedMessage}"))
                     println("Error al obtener los usuarios: ${e.localizedMessage}")
                     e.printStackTrace()
                 }

@@ -5,7 +5,7 @@ data class FindUserByUsernameQuery(
 ) {
 
     fun validate(): FindUserByUsernameQuery {
-        checkNotNull(username) {throw IllegalArgumentException("Username must be defined")}
+        checkNotNull(username) {throw IllegalArgumentException("Username debe esta definido")}
         return this
     }
 }

@@ -13,11 +13,11 @@ data class User(
 {
     companion object {
         fun fromPrimitives(primitives: Map<String, String?>): User {
-            val id = primitives["id"] ?: throw IllegalArgumentException("Id must not be null")
-            val name = primitives["name"] ?: throw IllegalArgumentException("Name must not be null")
-            val username = primitives["username"] ?: throw IllegalArgumentException("Username must not be null")
-            val email = primitives["email"] ?: throw IllegalArgumentException("Email must not be null")
-            val password = primitives["password"] ?: throw IllegalArgumentException("Password must not be null")
+            val id = primitives["id"] ?: throw IllegalArgumentException("El ID no puede ser nulo/null")
+            val name = primitives["name"] ?: throw IllegalArgumentException("El name no puede ser nulo/null")
+            val username = primitives["username"] ?: throw IllegalArgumentException("El username no puede ser nulo/null")
+            val email = primitives["email"] ?: throw IllegalArgumentException("El email no puede ser nulo/null")
+            val password = primitives["password"] ?: throw IllegalArgumentException("La password no puede ser nulo/null")
 
             return User(id, name, username, email, password)
         }
