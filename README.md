@@ -32,7 +32,22 @@ Este comando levantará los contenedores para MongoDB, Mongo Express, y la aplic
 4. Verificar la Aplicación
 Una vez que los servicios estén corriendo, puedes verificar el estado de la aplicación accediendo a:
 - AplicacttionKt (http://127.0.0.1:8080/)
-  
+
+*Si no se puede ejecutar el programa deberas seguir los siguientes pasos:*
+
+En el IDE arriba
+1. Edit Configurations..
+2. Add New Configuration
+3. Application
+En Build and run:
+1. Name el que quieran
+2. JDK que tengan instalado (maximo 21, porque el 22 no es compatible)
+
+Modulo: `-cp utn.methodology.posts.main`
+Main class: `utn.methodology.ApplicationKt`
+
+De esta manera deberia poder ejecutar el programa.
+
 6. Detener los Servicios
 Para detener los servicios ejecuta:
 ```bash
