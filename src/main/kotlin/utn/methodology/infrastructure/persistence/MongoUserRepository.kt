@@ -5,7 +5,6 @@ import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.UpdateOptions
 import org.bson.Document
 import utn.methodology.domain.entities.User
-import com.mongodb.client.model.Filters.eq
 
 class MongoUserRepository(private val database: MongoDatabase) {
     private val collection: MongoCollection<Document> = database.getCollection("users")
@@ -37,10 +36,21 @@ class MongoUserRepository(private val database: MongoDatabase) {
     }
 
     fun findByUsername(username: String): User? {
-        val filter = Document("username", username)
+        val filter = Document("username", Document("\$regex", "^$username").append("\$options", "i"))
         val document = collection.find(filter).firstOrNull()
 
         return document?.let {
+            User.fromPrimitives(it.toMap() as Map<String, String>)
+        }
+    }
+
+    // Nuevo método para buscar por username parcial
+    fun findByUsernameContains(query: String): List<User> {
+        val regex = ".*${query.lowercase()}.*".toRegex(RegexOption.IGNORE_CASE)
+        val filter = Document("username", Document("\$regex", regex.pattern).append("\$options", "i"))
+        val documents = collection.find(filter).toList()
+
+        return documents.map {
             User.fromPrimitives(it.toMap() as Map<String, String>)
         }
     }

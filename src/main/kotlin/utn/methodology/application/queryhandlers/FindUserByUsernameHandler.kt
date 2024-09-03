@@ -8,14 +8,14 @@ class FindUserByUsernameHandler(
     private val userRepository: MongoUserRepository
 ) {
 
-    fun handle(query: FindUserByUsernameQuery): Map<String, String> {
+    fun handle(query: FindUserByUsernameQuery): List<Map<String, String>> {
 
-        val user = userRepository.findByUsername(query.username)
+        val users = userRepository.findByUsernameContains(query.username)
 
-        if (user == null) {
-            throw NotFoundException("Usuario con username: ${query.username} no encontrado")
+        if (users.isEmpty()) {
+            throw NotFoundException("No se encontraron usuarios con username que contenga: ${query.username}")
         }
 
-        return user.toPrimitives()
+        return users.map { it.toPrimitives() }
     }
 }
