@@ -5,6 +5,7 @@ import utn.methodology.application.commands.CreateUserCommand
 import utn.methodology.domain.entities.User
 import utn.methodology.infrastructure.persistence.MongoUserRepository
 import java.util.UUID
+
 class CreateUserHandler(
     private val userRepository: MongoUserRepository
 ) {
@@ -12,7 +13,7 @@ class CreateUserHandler(
         val user = User(
             UUID.randomUUID().toString(),
             command.name,
-            command.lastName,
+            command.username,
             command.email,
             command.password
         )

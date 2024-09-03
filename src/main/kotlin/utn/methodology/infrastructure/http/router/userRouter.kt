@@ -66,9 +66,14 @@ fun Application.userRouter() {
         }*/
 
         get("/users") {
-            val users = userMongoUserRepository.findAll();
-
-            call.respond(HttpStatusCode.OK, users.map { it.toPrimitives() })
+            try {
+                val users = userMongoUserRepository.findAll()
+                call.respond(HttpStatusCode.OK, users.map { it.toPrimitives() })
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to e.localizedMessage))
+                println("Error al obtener los usuarios: ${e.localizedMessage}")
+                e.printStackTrace()
+            }
         }
 
 /*
