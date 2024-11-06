@@ -2,6 +2,7 @@ package utn.methodology
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import utn.methodology.infrastructure.http.router.userRouter
+import utn.methodology.infrastructure.http.router.postRouter
 import utn.methodology.infrastructure.persistence.configureDatabases
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
@@ -44,7 +45,7 @@ fun Application.module() {
     errorHandler()
     configureDatabases()
     userRouter()
-
+    postRouter()
 }
 
 fun logError(call: ApplicationCall, cause: Throwable) {
