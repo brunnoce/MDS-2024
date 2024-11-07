@@ -19,20 +19,3 @@ class FindUserByUsernameHandler(
         return users.map { it.toPrimitives() }
     }
 }
-
-//class FindUserByUsernameHandler(
-//    private val userRepository: MongoUserRepository
-//) {
-//
-//    fun handle(query: FindUserByUsernameQuery): Map<String, String> {
-//
-//        val user = userRepository.findByUsername(query.username)
-//
-//        if (user == null) {
-//            throw NotFoundException("Usuario con username: ${query.username} no encontrado")
-//        }
-//
-//        return user.toPrimitives()
-//    }
-//}
-//

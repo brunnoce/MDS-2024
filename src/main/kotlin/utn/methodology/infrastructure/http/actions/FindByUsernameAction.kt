@@ -11,13 +11,3 @@ class FindUserByUsernameAction(
         return handler.handle(query)
     }
 }
-
-//class FindUserByUsernameAction(
-//    private val handler: FindUserByUsernameHandler
-//) {
-//
-//    fun execute(query: FindUserByUsernameQuery): Map<String, String> {
-//        return handler.handle(query)
-//    }
-//}
-//

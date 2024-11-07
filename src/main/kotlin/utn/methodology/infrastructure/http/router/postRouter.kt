@@ -45,23 +45,48 @@ fun Application.postRouter() {
 
         get("/posts") {
             val userId = call.request.queryParameters["userId"]
-            val order = call.request.queryParameters["order"] ?: "ASC"
-            val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 10
-            val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
 
-            if (userId.isNullOrBlank()) {
-                call.respond(HttpStatusCode.BadRequest, "El parámetro 'userId' es requerido.")
-                return@get
-            }
-
-            try {
-                val posts = postRepository.findByUserId(userId)
-                val filteredPosts = when (order.uppercase()) {
-                    "DESC" -> posts.sortedByDescending { it.createdAt }.drop(offset).take(limit)
-                    else -> posts.sortedBy { it.createdAt }.drop(offset).take(limit)
+            if (userId != null) {
+                if (userId.isBlank()) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "El 'userId' no puede estar en blanco"))
+                    return@get
                 }
-                call.respond(HttpStatusCode.OK, filteredPosts)
+
+                try {
+                    val posts = postRepository.findByUserId(userId)
+                    if (posts.isEmpty()) {
+                        call.respond(HttpStatusCode.NotFound, mapOf("error" to "No se encontraron posts para el userId: $userId"))
+                    } else {
+                        call.respond(HttpStatusCode.OK, posts)
+                    }
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Error inesperado: ${e.localizedMessage}"))
+                    println("Error al buscar posts para userId $userId: ${e.localizedMessage}")
+                    e.printStackTrace()
+                }
+            } else {
+                try {
+                    val posts = postRepository.findAll()
+                    call.respond(HttpStatusCode.OK, posts)
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Error inesperado: ${e.localizedMessage}"))
+                    println("Error al obtener todos los posts: ${e.localizedMessage}")
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        get("/posts") {
+            try {
+                val posts = postRepository.findAll()
+
+                if (posts.isEmpty()) {
+                    call.respond(HttpStatusCode.NoContent)
+                } else {
+                    call.respond(HttpStatusCode.OK, posts)
+                }
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 println("Error al procesar la solicitud de obtener posts: ${ex.message}")
                 call.respond(HttpStatusCode.InternalServerError, "Error al procesar la solicitud")
             }
@@ -76,13 +101,23 @@ fun Application.postRouter() {
             }
 
             try {
-                createPostHandler.deletePost(postId)
-                call.respond(HttpStatusCode.NoContent)
+                val post = postRepository.findById(postId)
+                if (post == null) {
+                    call.respond(HttpStatusCode.NotFound, "Post no encontrado")
+                    return@delete
+                }
+
+                postRepository.deleteById(postId)
+                // Usamos 200 OK para devolver un mensaje
+                call.respond(HttpStatusCode.OK, mapOf("message" to "Post eliminado exitosamente"))
+
             } catch (ex: Exception) {
-                println("Error al eliminar el post: ${ex.message}")
-                call.respond(HttpStatusCode.InternalServerError, "Error al procesar la solicitud")
+                println("Error al eliminar el post: ${ex.localizedMessage}")
+                call.respond(HttpStatusCode.InternalServerError, "Error al procesar la solicitud: ${ex.localizedMessage}")
             }
         }
+
+
     }
 }
 

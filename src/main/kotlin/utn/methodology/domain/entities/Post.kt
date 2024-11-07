@@ -8,11 +8,11 @@ import java.util.*
 
 @Serializable
 data class Post(
-    @Contextual val id: UUID = UUID.randomUUID(),
+    @Serializable(with = UUIDSerializer::class) val id: UUID,
     val userId: String,
     val message: String,
-    val createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-) {
+    val createdAt: String
+){
     init {
         require(message.length <= 500) { "El contenido del post no puede exceder los 500 caracteres" }
     }

@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.litote.kmongo:kmongo:4.8.0") // KMongo
+    implementation("org.mongodb:mongodb-driver-sync:4.7.0") // MongoDB driver (si no lo tienes)
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
