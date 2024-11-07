@@ -1,18 +1,24 @@
 package utn.methodology.domain.entities
 
 import kotlinx.serialization.Serializable
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType.Primitive
 
 @Serializable
 data class User(
-    private val id: String,
-    private var name: String,
-    private var username: String,
-    private val email: String,
-    private val password: String)
-{
+    val id: String,
+    var name: String,
+    var username: String,
+    val email: String,
+    private val password: String, // Contraseña sigue siendo privada
+    var followers: MutableList<String> = mutableListOf(),  // Seguidores
+    var following: MutableList<String> = mutableListOf()   // Seguidos
+) {
+    // Métodos de acceso a los campos privados, y funciones de seguimiento
+    fun getPassword() = password
+
     companion object {
         fun fromPrimitives(primitives: Map<String, String?>): User {
+            println("Deserializando User: $primitives")
+
             val id = primitives["id"] ?: throw IllegalArgumentException("El ID no puede ser nulo/null")
             val name = primitives["name"] ?: throw IllegalArgumentException("El name no puede ser nulo/null")
             val username = primitives["username"] ?: throw IllegalArgumentException("El username no puede ser nulo/null")
@@ -21,15 +27,6 @@ data class User(
 
             return User(id, name, username, email, password)
         }
-    }
-
-    fun getId(): String {
-        return this.id;
-    }
-
-    fun update(name: String, username: String) {
-        this.name = name;
-        this.username = username;
     }
 
     fun toPrimitives(): Map<String, String> {
@@ -41,5 +38,6 @@ data class User(
             "password" to this.password
         )
     }
-
 }
+
+

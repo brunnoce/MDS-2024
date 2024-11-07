@@ -11,11 +11,13 @@ class CreateUserHandler(
 ) {
     fun handle(command: CreateUserCommand) {
         val user = User(
-            UUID.randomUUID().toString(),
-            command.name,
-            command.username,
-            command.email,
-            command.password
+            id = UUID.randomUUID().toString(),
+            name = command.name,
+            username = command.username,
+            email = command.email,
+            password = command.password,
+            followers = mutableListOf(),
+            following = mutableListOf()
         )
 
         userRepository.save(user)

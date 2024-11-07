@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import org.bson.Document
 
 @Serializable
 data class Post(
@@ -12,7 +13,7 @@ data class Post(
     val userId: String,
     val message: String,
     val createdAt: String
-){
+) {
     init {
         require(message.length <= 500) { "El contenido del post no puede exceder los 500 caracteres" }
     }
@@ -26,6 +27,15 @@ data class Post(
 
             return Post(id, authorId, content, createdAt)
         }
+
+        fun fromDocument(doc: Document): Post {
+            val id = UUID.fromString(doc["_id"]?.toString() ?: throw IllegalArgumentException("El ID no se encuentra"))
+            val userId = doc["userId"]?.toString() ?: throw IllegalArgumentException("El userId no se encuentra")
+            val message = doc["message"]?.toString() ?: throw IllegalArgumentException("El mensaje no se encuentra")
+            val createdAt = doc["createdAt"]?.toString() ?: throw IllegalArgumentException("La fecha de creación no se encuentra")
+
+            return Post(id, userId, message, createdAt)
+        }
     }
 
     fun toPrimitives(): Map<String, String> {
@@ -37,3 +47,6 @@ data class Post(
         )
     }
 }
+
+
+

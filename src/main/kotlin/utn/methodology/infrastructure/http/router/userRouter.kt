@@ -10,7 +10,6 @@ import utn.methodology.infrastructure.persistence.MongoUserRepository
 import utn.methodology.infrastructure.persistence.connectToMongoDB
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -70,5 +69,35 @@ fun Application.userRouter() {
             }
 
         }
+        post("/users/follow") {
+            val body = call.receive<Map<String, String>>()
+            val followerId = body["followerId"]
+            val followingId = body["followingId"]
+
+            if (followerId == null || followingId == null) {
+                call.respond(HttpStatusCode.BadRequest, "Ambos 'followerId' y 'followingId' son requeridos.")
+                return@post
+            }
+
+            try {
+                val user = userMongoUserRepository.findOne(followerId)
+                val userToFollow = userMongoUserRepository.findOne(followingId)
+
+                if (user == null || userToFollow == null) {
+                    call.respond(HttpStatusCode.NotFound, "Uno o ambos usuarios no fueron encontrados.")
+                    return@post
+                }
+
+                // Agregar el seguidor y el seguido
+                userMongoUserRepository.addFollower(followingId, followerId)
+                userMongoUserRepository.addFollowing(followerId, followingId)
+
+                call.respond(HttpStatusCode.OK, "El usuario ha seguido correctamente.")
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Error al seguir al usuario: ${e.localizedMessage}")
+            }
+        }
+
+
     }
 }

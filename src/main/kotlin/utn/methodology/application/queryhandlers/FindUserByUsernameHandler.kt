@@ -7,8 +7,7 @@ import io.ktor.server.plugins.*
 class FindUserByUsernameHandler(
     private val userRepository: MongoUserRepository
 ) {
-
-    fun handle(query: FindUserByUsernameQuery): List<Map<String, String>> {
+    fun handle(query: FindUserByUsernameQuery): List<Unit> {
 
         val users = userRepository.findByUsernameContains(query.username)
 
@@ -16,6 +15,8 @@ class FindUserByUsernameHandler(
             throw NotFoundException("No se encontraron usuarios con username que contenga: ${query.username}")
         }
 
-        return users.map { it.toPrimitives() }
+        return users.map{}
     }
 }
+
+

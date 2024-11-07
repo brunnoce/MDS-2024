@@ -7,7 +7,7 @@ class FindUserByUsernameAction(
     private val handler: FindUserByUsernameHandler
 ) {
 
-    fun execute(query: FindUserByUsernameQuery): List<Map<String, String>> {
+    fun execute(query: FindUserByUsernameQuery): List<Unit> {
         return handler.handle(query)
     }
 }
