@@ -6,4 +6,5 @@ interface PostRepository {
     fun save(post: Post)
     fun findByOwnerId(ownerId: String): List<Post>
     fun findByFollows(followIds: List<String>): List<Post>
+    fun deleteById(postId: String)
 }

@@ -54,7 +54,7 @@ fun Application.postRouter() {
                 }
 
                 try {
-                    val posts = postRepository.findByUserId(userId)
+                    val posts = postRepository.findByOwnerId(userId)
                     if (posts.isEmpty()) {
                         call.respond(HttpStatusCode.NotFound, mapOf("error" to "No se encontraron posts para el userId: $userId"))
                     } else {
@@ -105,27 +105,41 @@ fun Application.postRouter() {
             val userId = call.parameters["userId"] ?: return@get call.respond(HttpStatusCode.BadRequest, "UserId es requerido")
 
             try {
+                // Intentar obtener el usuario por ID
                 val user = userRepository.findOne(userId)
                 if (user == null) {
                     call.respond(HttpStatusCode.NotFound, "Usuario no encontrado")
                     return@get
                 }
 
+                // Verificar si el usuario sigue a alguien
+                if (user.following.isEmpty()) {
+                    call.respond(HttpStatusCode.NoContent, "El usuario no sigue a nadie.")
+                    return@get
+                }
+
+                // Log para verificar los usuarios seguidos
                 println("Usuarios seguidos por $userId: ${user.following}")
+
+                // Consultar los posts de los usuarios seguidos
                 val posts = postRepository.findPostsByUserIds(user.following)
 
+                // Si no se encontraron posts, retornar un 204 No Content
                 if (posts.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent, "No se encontraron posts de usuarios seguidos.")
                     return@get
                 }
 
+                // Log para verificar los posts encontrados
+                println("Posts encontrados: $posts")
+
+                // Responder con los posts encontrados
                 call.respond(HttpStatusCode.OK, posts.map { it.toPrimitives() })
             } catch (e: Exception) {
+                // Manejo de errores generales
                 call.respond(HttpStatusCode.InternalServerError, "Error al obtener los posts: ${e.localizedMessage}")
             }
         }
-
-
     }
 }
 

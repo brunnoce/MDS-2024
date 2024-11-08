@@ -1,5 +1,6 @@
 package utn.methodology.application.commandhandlers
 
+import utn.methodology.domain.contracts.PostRepository
 import utn.methodology.domain.entities.Post
 import utn.methodology.infrastructure.persistence.Repositories.MongoPostRepository
 import java.time.LocalDateTime
@@ -7,7 +8,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class CreatePostHandler(
-    private val postRepository: MongoPostRepository
+    private val postRepository: PostRepository
 ) {
 
     fun createPost(userId: String, message: String): Post {
