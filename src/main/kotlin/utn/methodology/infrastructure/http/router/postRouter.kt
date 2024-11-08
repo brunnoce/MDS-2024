@@ -101,45 +101,37 @@ fun Application.postRouter() {
             }
         }
 
-        get("/posts/users/{userId}") {
+        get("/posts/user/{userId}") {
             val userId = call.parameters["userId"] ?: return@get call.respond(HttpStatusCode.BadRequest, "UserId es requerido")
 
             try {
-                // Intentar obtener el usuario por ID
                 val user = userRepository.findOne(userId)
                 if (user == null) {
                     call.respond(HttpStatusCode.NotFound, "Usuario no encontrado")
                     return@get
                 }
 
-                // Verificar si el usuario sigue a alguien
-                if (user.following.isEmpty()) {
+                // Verificamos si el usuario sigue a alguien
+                val followedUserIds = user.following
+                if (followedUserIds.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent, "El usuario no sigue a nadie.")
                     return@get
                 }
 
-                // Log para verificar los usuarios seguidos
-                println("Usuarios seguidos por $userId: ${user.following}")
+                println("Usuarios seguidos por $userId: $followedUserIds")
 
-                // Consultar los posts de los usuarios seguidos
-                val posts = postRepository.findPostsByUserIds(user.following)
-
-                // Si no se encontraron posts, retornar un 204 No Content
+                // Obtener los posts de los usuarios seguidos y ordenar por fecha descendente
+                val posts = postRepository.findPostsByUserIds(followedUserIds)
                 if (posts.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent, "No se encontraron posts de usuarios seguidos.")
-                    return@get
+                } else {
+                    call.respond(HttpStatusCode.OK, posts.map { it.toPrimitives() })
                 }
-
-                // Log para verificar los posts encontrados
-                println("Posts encontrados: $posts")
-
-                // Responder con los posts encontrados
-                call.respond(HttpStatusCode.OK, posts.map { it.toPrimitives() })
             } catch (e: Exception) {
-                // Manejo de errores generales
                 call.respond(HttpStatusCode.InternalServerError, "Error al obtener los posts: ${e.localizedMessage}")
             }
         }
+
     }
 }
 

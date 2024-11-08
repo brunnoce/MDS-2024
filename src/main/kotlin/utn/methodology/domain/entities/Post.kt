@@ -1,9 +1,6 @@
 package utn.methodology.domain.entities
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import org.bson.Document
 
@@ -20,21 +17,12 @@ data class Post(
 
     companion object {
         fun fromPrimitives(primitives: Map<String, String?>): Post {
-            val id = UUID.fromString(primitives["id"] ?: throw IllegalArgumentException("El ID no puede ser nulo/null"))
-            val authorId = primitives["userId"] ?: throw IllegalArgumentException("El ID del autor no puede ser nulo/null")
-            val content = primitives["message"] ?: throw IllegalArgumentException("El contenido no puede ser nulo/null")
-            val createdAt = primitives["createdAt"] ?: throw IllegalArgumentException("La fecha de creación no puede ser nula/null")
+            val id = UUID.fromString(primitives["id"] ?: throw IllegalArgumentException("El ID no puede ser nulo"))
+            val authorId = primitives["userId"] ?: throw IllegalArgumentException("El ID del autor no puede ser nulo")
+            val content = primitives["message"] ?: throw IllegalArgumentException("El contenido no puede ser nulo")
+            val createdAt = primitives["createdAt"] ?: throw IllegalArgumentException("La fecha de creación no puede ser nula")
 
             return Post(id, authorId, content, createdAt)
-        }
-
-        fun fromDocument(doc: Document): Post {
-            val id = UUID.fromString(doc["_id"]?.toString() ?: throw IllegalArgumentException("El ID no se encuentra"))
-            val userId = doc["userId"]?.toString() ?: throw IllegalArgumentException("El userId no se encuentra")
-            val message = doc["message"]?.toString() ?: throw IllegalArgumentException("El mensaje no se encuentra")
-            val createdAt = doc["createdAt"]?.toString() ?: throw IllegalArgumentException("La fecha de creación no se encuentra")
-
-            return Post(id, userId, message, createdAt)
         }
     }
 

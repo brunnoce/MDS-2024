@@ -22,10 +22,27 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
     override fun findOne(id: String): User? {
         val filter = Document("_id", id)
         val document = collection.find(filter).firstOrNull()
+        println("Documento encontrado: $document")
+
         return document?.let {
-            User.fromPrimitives(it.toMap() as Map<String, String>)
+            try {
+                // Extraer los valores de cada campo con su tipo correspondiente
+                User(
+                    id = it.getString("_id"),
+                    email = it.getString("email"),
+                    name = it.getString("name"),
+                    password = it.getString("password"),
+                    username = it.getString("username"),
+                    following = it.getList("following", String::class.java),
+                    followers = it.getList("followers", String::class.java)
+                )
+            } catch (e: Exception) {
+                println("Error al mapear el documento: ${e.localizedMessage}")
+                null
+            }
         }
     }
+
 
     override fun findByUsername(username: String): User? {
         val filter = Document("username", Document("\$regex", "^$username").append("\$options", "i"))

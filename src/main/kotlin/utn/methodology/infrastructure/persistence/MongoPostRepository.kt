@@ -53,23 +53,25 @@ class MongoPostRepository(private val database: MongoDatabase) : PostRepository 
         }
     }
 
-    // Métodos adicionales para manipular los posts
     fun findPostsByUserIds(userIds: List<String>): List<Post> {
         if (userIds.isEmpty()) {
             println("No hay usuarios seguidos para la consulta.")
-            return emptyList()  // Retorna una lista vacía si no hay seguidores
+            return emptyList()
         }
 
-        val filter = Document("userId", Document("\$in", userIds))  // Filtrar por userId
-        val sort = Document("createdAt", -1)  // Ordenar por fecha de creación (descendente)
+        val filter = Document("userId", Document("\$in", userIds))  // Filtramos solo posts de los usuarios seguidos
+        val sort = Document("createdAt", -1)  // Ordenamos por fecha de creación (descendente)
         println("Consulta MongoDB - Filtro: $filter")
-        val posts = collection.find(filter).sort(sort).toList()
 
-        return posts.map { document ->
-            val postMap = document.toMap() as Map<String, String>
-            Post.fromPrimitives(postMap)
-        }
+        return collection.find(filter).sort(sort).map { document ->
+            val id = UUID.fromString(document["_id"].toString())
+            val userId = document["userId"] as String
+            val message = document["message"] as String
+            val createdAt = document["createdAt"] as String
+            Post(id, userId, message, createdAt)
+        }.toList()
     }
+
 
     fun findAll(): List<Post> {
         return collection.find().map { document ->
