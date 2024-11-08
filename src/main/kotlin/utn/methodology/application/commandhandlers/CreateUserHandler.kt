@@ -1,25 +1,28 @@
 package utn.methodology.application.commandhandlers
 
-import java.util.*
 import utn.methodology.application.commands.CreateUserCommand
+import utn.methodology.domain.contracts.UserRepository
 import utn.methodology.domain.entities.User
-import utn.methodology.infrastructure.persistence.MongoUserRepository
 import java.util.UUID
 
 class CreateUserHandler(
-    private val userRepository: MongoUserRepository
+    private val userRepository: UserRepository
 ) {
     fun handle(command: CreateUserCommand) {
+        require(command.name.isNotBlank()) { "Name is required" }
+        require(command.username.isNotBlank()) { "Username is required" }
+        require(command.email.isNotBlank()) { "Email is required" }
+        require(command.password.isNotBlank()) { "Password is required" }
+
         val user = User(
             id = UUID.randomUUID().toString(),
             name = command.name,
             username = command.username,
             email = command.email,
             password = command.password,
-            followers = mutableListOf(),
-            following = mutableListOf()
+            followers = command.followers.toMutableList(),  
+            following = command.following.toMutableList()
         )
-
         userRepository.save(user)
     }
 }

@@ -7,7 +7,9 @@ data class CreateUserCommand(
     val name: String,
     val username: String,
     val email: String,
-    val password: String
+    val password: String,
+    val followers: List<String> = mutableListOf(),
+    val following: List<String> = mutableListOf()
 ) {
     fun validate(): CreateUserCommand {
         checkNotNull(name) { throw IllegalArgumentException("Name debe estar definido") }
@@ -17,5 +19,4 @@ data class CreateUserCommand(
 
         return this;
     }
-
 }
