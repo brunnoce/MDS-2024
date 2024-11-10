@@ -27,7 +27,6 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
 
         val filter = Document("_id", uuid.toString())
         val document = collection.find(filter).firstOrNull()
-        println("User encontrado: $document")
 
         return document?.let {
             try {
@@ -37,8 +36,8 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
                     name = it.getString("name"),
                     password = it.getString("password"),
                     username = it.getString("username"),
-                    following = it.getList("following", String::class.java) ?: emptyList(),
-                    followers = it.getList("followers", String::class.java) ?: emptyList()
+                    following = (it["following"] as? List<*>)?.mapNotNull { item -> item as? String }?.toMutableList() ?: mutableListOf(),
+                    followers = (it["followers"] as? List<*>)?.mapNotNull { item -> item as? String }?.toMutableList() ?: mutableListOf()
                 )
             } catch (e: Exception) {
                 println("Error al mapear el documento: ${e.localizedMessage}")
@@ -58,8 +57,9 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
                 name = it.getString("name"),
                 password = it.getString("password"),
                 username = it.getString("username"),
-                following = it.getList("following", String::class.java) ?: emptyList(),
-                followers = it.getList("followers", String::class.java) ?: emptyList()
+                following = it.getList("following", String::class.java)?.toMutableList() ?: mutableListOf(),
+                followers = it.getList("followers", String::class.java)?.toMutableList() ?: mutableListOf()
+
             )
         }
     }

@@ -9,8 +9,8 @@ data class User(
     var username: String,
     val email: String,
     private val password: String,
-    var followers: List<String> = mutableListOf(),
-    var following: List<String> = mutableListOf()
+    var followers: MutableList<String> = mutableListOf(),
+    var following: MutableList<String> = mutableListOf()
 ) {
     fun getPassword() = password
 
@@ -35,6 +35,10 @@ data class User(
             "username" to this.username,
             "email" to this.email,
             "password" to this.password,
+            "following" to this.following.joinToString(", "),
+            "followers" to this.followers.joinToString(", ")
         )
     }
 }
+
+

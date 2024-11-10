@@ -3,9 +3,7 @@ package utn.methodology.infrastructure.http.router
 import utn.methodology.application.commands.CreateUserCommand
 import utn.methodology.application.queryhandlers.FindUserByUsernameHandler
 import utn.methodology.application.queries.FindUserByUsernameQuery
-import utn.methodology.infrastructure.http.actions.CreateUserAction
 import utn.methodology.application.commandhandlers.CreateUserHandler
-import utn.methodology.infrastructure.http.actions.FindUserByUsernameAction
 import utn.methodology.infrastructure.persistence.MongoUserRepository
 import utn.methodology.infrastructure.persistence.connectToMongoDB
 import io.ktor.http.*
@@ -15,10 +13,10 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import utn.methodology.application.commandhandlers.DeletePostHandler
+import utn.methodology.application.commandhandlers.FollowUserHandler
 import utn.methodology.application.queries.FindUserByIdQuery
 import utn.methodology.application.queryhandlers.FindUserByIdHandler
-import utn.methodology.infrastructure.http.actions.DeletePostAction
-import utn.methodology.infrastructure.http.actions.FindUserByIdAction
+import utn.methodology.infrastructure.http.actions.*
 
 fun Application.userRouter() {
     val mongoDatabase = connectToMongoDB()
@@ -28,6 +26,7 @@ fun Application.userRouter() {
     val createUserAction = CreateUserAction(CreateUserHandler(userMongoUserRepository))
     val findUserByUsernameAction = FindUserByUsernameAction(FindUserByUsernameHandler(userMongoUserRepository))
     val findUserByIdAction = FindUserByIdAction(FindUserByIdHandler(userMongoUserRepository))
+    val followUserAction = FollowUserAction(FollowUserHandler(userMongoUserRepository))
 
     routing {
         get("/") {
@@ -96,36 +95,27 @@ fun Application.userRouter() {
             }
         }
 
-
         post("/users/follow") {
-            val body = call.receive<Map<String, String>>()
-            val followerId = body["followerId"]
-            val followingId = body["followingId"]
+            val params = call.receive<Map<String, String>>()
 
-            if (followerId == null || followingId == null) {
-                call.respond(HttpStatusCode.BadRequest, "Ambos 'followerId' y 'followingId' son requeridos.")
+            val followerId = params["followerId"]
+            val followingId = params["followingId"]
+
+            if (followerId.isNullOrBlank() || followingId.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, "Los IDs de los usuarios son requeridos.")
                 return@post
             }
 
             try {
-                val user = userMongoUserRepository.findOne(followerId)
-                val userToFollow = userMongoUserRepository.findOne(followingId)
-
-                if (user == null || userToFollow == null) {
-                    call.respond(HttpStatusCode.NotFound, "Uno o ambos usuarios no fueron encontrados.")
-                    return@post
-                }
-
-                // Agregar el seguidor y el seguido
-                userMongoUserRepository.addFollower(followingId, followerId)
-                userMongoUserRepository.addFollowing(followerId, followingId)
-
-                call.respond(HttpStatusCode.OK, "El usuario ha seguido correctamente.")
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, "Error al seguir al usuario: ${e.localizedMessage}")
+                followUserAction.execute(followerId, followingId)
+                call.respond(HttpStatusCode.OK, "Usuario seguido correctamente.")
+            } catch (ex: IllegalArgumentException) {
+                call.respond(HttpStatusCode.BadRequest, ex.message ?: "Error al intentar seguir al usuario.")
+            } catch (ex: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Error inesperado: ${ex.message}")
+                println("Error al seguir al usuario: ${ex.localizedMessage}")
+                ex.printStackTrace()
             }
         }
-
-
     }
 }
