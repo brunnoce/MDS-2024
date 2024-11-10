@@ -16,12 +16,10 @@ import java.util.*
 class MongoUserRepository(private val database: MongoDatabase) : UserRepository {
     private val collection: MongoCollection<Document> = database.getCollection("users")
 
-    // Crear el SerializersModule para registrar List<String>
     private val module = SerializersModule {
-        contextual(ListSerializer(String.serializer()))  // Registrar el serializer para List<String>
+        contextual(ListSerializer(String.serializer()))
     }
 
-    // Configurar Json con el SerializersModule
     private val json = Json {
         serializersModule = module
         ignoreUnknownKeys = true
@@ -31,7 +29,6 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
         val options = UpdateOptions().upsert(true)
         val filter = Document("_id", user.id)
 
-        // Convertir el objeto User a JSON string y luego a Document
         val jsonData = json.encodeToString(User.serializer(), user)
         val document = Document.parse(jsonData)
 
@@ -51,7 +48,6 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
 
         return document?.let {
             try {
-                // Convertir el Document a JSON string y luego a objeto User
                 val jsonData = it.toJson()
                 json.decodeFromString<User>(jsonData)
             } catch (e: Exception) {
