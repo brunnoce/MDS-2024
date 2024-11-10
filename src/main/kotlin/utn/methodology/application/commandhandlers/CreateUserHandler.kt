@@ -9,10 +9,10 @@ class CreateUserHandler(
     private val userRepository: UserRepository
 ) {
     fun handle(command: CreateUserCommand) {
-        require(command.name.isNotBlank()) { "Name is required" }
-        require(command.username.isNotBlank()) { "Username is required" }
-        require(command.email.isNotBlank()) { "Email is required" }
-        require(command.password.isNotBlank()) { "Password is required" }
+        require(command.name.isNotBlank()) { "Se requiere el nombre" }
+        require(command.username.isNotBlank()) { "Se requiere el username" }
+        require(command.email.isNotBlank()) { "Se requiere el email" }
+        require(command.password.isNotBlank()) { "Se requiere la contraseña" }
 
         val user = User(
             id = UUID.randomUUID().toString(),

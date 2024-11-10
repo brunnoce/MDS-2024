@@ -2,7 +2,6 @@ package utn.methodology.unit.application
 
 import utn.methodology.application.commandhandlers.CreatePostHandler
 import utn.methodology.application.commandhandlers.PostValidationException
-import utn.methodology.domain.entities.Post
 import utn.methodology.shared.mocks.MockPostRepository
 import utn.methodology.shared.mocks.MockUserRepository
 import utn.methodology.shared.mothers.PostMother
@@ -29,31 +28,31 @@ class CreatePostHandlerTest {
     fun `create_post_should_returns_201`() {
         // Arrange
         val user = UserMother.random()
-        val content = "Este es un mensaje de prueba que no excede los 500 caracteres."
+        mockUserRepository.save(user)
 
-        mockUserRepository.save(user)  // Guardamos el usuario en el repositorio
+        val post = PostMother.withContent(user.id, "Este es un mensaje de prueba que no excede los 500 caracteres.")
 
         // Act
-        val post = sut.createPost(user.id, content)
+        sut.createPost(post.userId, post.message)
 
         // Assertions
         val posts = mockPostRepository.findByOwnerId(user.id)
         assert(posts.size == 1) { "El post debería haberse guardado." }
-        assert(posts[0].message == content) { "El contenido del post no coincide." }
-        assert(posts[0].userId == user.id) { "El ID del usuario no coincide." }
+        assert(posts[0].message == post.message) { "El contenido del post no coincide." }
+        assert(posts[0].userId == post.userId) { "El ID del usuario no coincide." }
     }
 
     @Test
     fun `create_post_should_returns_400`() {
         // Arrange
         val user = UserMother.random()
-        val longContent = "a".repeat(501)  // Genera un contenido de más de 500 caracteres
+        mockUserRepository.save(user)
 
-        mockUserRepository.save(user)  // Guardamos el usuario en el repositorio
+        val longPost = PostMother.withContent(user.id, "a".repeat(501)) // +500 caracteres
 
         // Act & Assert
         assertFailsWith<PostValidationException> {
-            sut.createPost(user.id, longContent)  // Debería lanzar la excepción por contenido demasiado largo
+            sut.createPost(longPost.userId, longPost.message)
         }
     }
 }

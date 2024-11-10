@@ -10,9 +10,15 @@ import utn.methodology.infrastructure.persistence.MongoUserRepository
 import utn.methodology.infrastructure.persistence.connectToMongoDB
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import utn.methodology.application.commandhandlers.DeletePostHandler
+import utn.methodology.application.queries.FindUserByIdQuery
+import utn.methodology.application.queryhandlers.FindUserByIdHandler
+import utn.methodology.infrastructure.http.actions.DeletePostAction
+import utn.methodology.infrastructure.http.actions.FindUserByIdAction
 
 fun Application.userRouter() {
     val mongoDatabase = connectToMongoDB()
@@ -21,6 +27,7 @@ fun Application.userRouter() {
 
     val createUserAction = CreateUserAction(CreateUserHandler(userMongoUserRepository))
     val findUserByUsernameAction = FindUserByUsernameAction(FindUserByUsernameHandler(userMongoUserRepository))
+    val findUserByIdAction = FindUserByIdAction(FindUserByIdHandler(userMongoUserRepository))
 
     routing {
         get("/") {
@@ -43,15 +50,10 @@ fun Application.userRouter() {
                 }
                 try {
                     val query = FindUserByUsernameQuery(username).validate()
-                    val result = findUserByUsernameAction.execute(query)
-
-                    if (result.isEmpty()) {
-                        call.respond(HttpStatusCode.NotFound, mapOf("error" to "No se encontró el siguiente username: $username"))
-                    } else {
-                        call.respond(HttpStatusCode.OK, result)
-                    }
-                } catch (e: IllegalArgumentException) {
-                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to e.localizedMessage))
+                    val user = findUserByUsernameAction.execute(query)
+                    call.respond(HttpStatusCode.OK, user.toPrimitives())
+                } catch (e: NotFoundException) {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to e.localizedMessage))
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Error inesperado: ${e.localizedMessage}"))
                     println("Error al buscar el usuario por username: ${e.localizedMessage}")
@@ -67,8 +69,34 @@ fun Application.userRouter() {
                     e.printStackTrace()
                 }
             }
-
         }
+
+        get("/users/{id}") {
+            val id = call.parameters["id"]
+            if (id.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "El ID no puede estar vacío"))
+                return@get
+            }
+            try {
+                val query = FindUserByIdQuery(id).validate()
+
+                val user = findUserByIdAction.execute(query)
+
+                if (user == null) {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "Usuario no encontrado"))
+                } else {
+                    call.respond(HttpStatusCode.OK, user.toPrimitives())
+                }
+            } catch (e: NotFoundException) {
+                call.respond(HttpStatusCode.NotFound, mapOf("error" to e.localizedMessage))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Error inesperado: ${e.localizedMessage}"))
+                println("Error al buscar el usuario por ID: ${e.localizedMessage}")
+                e.printStackTrace()
+            }
+        }
+
+
         post("/users/follow") {
             val body = call.receive<Map<String, String>>()
             val followerId = body["followerId"]

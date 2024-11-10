@@ -8,11 +8,10 @@ data class User(
     var name: String,
     var username: String,
     val email: String,
-    private val password: String, // Contraseña sigue siendo privada
-    var followers: MutableList<String> = mutableListOf(),  // Seguidores
-    var following: MutableList<String> = mutableListOf()   // Seguidos
+    private val password: String,
+    var followers: List<String> = mutableListOf(),
+    var following: List<String> = mutableListOf()
 ) {
-    // Métodos de acceso a los campos privados, y funciones de seguimiento
     fun getPassword() = password
 
     companion object {
@@ -35,9 +34,7 @@ data class User(
             "name" to this.name,
             "username" to this.username,
             "email" to this.email,
-            "password" to this.password
+            "password" to this.password,
         )
     }
 }
-
-

@@ -15,7 +15,15 @@ data class Post(
         require(message.length <= 500) { "El contenido del post no puede exceder los 500 caracteres" }
     }
 
-    companion object {
+    fun toPrimitives(): Map<String, String> {
+        return mapOf(
+            "id" to this.id.toString(),
+            "userId" to this.userId,
+            "message" to this.message,
+            "createdAt" to this.createdAt
+        )
+    }
+    companion object { //NO SE USA PERO PARA SEGUIR LA ESTRUCTURA DEL USER LO CREAMOS TAMBIEN
         fun fromPrimitives(primitives: Map<String, String?>): Post {
             val id = UUID.fromString(primitives["id"] ?: throw IllegalArgumentException("El ID no puede ser nulo"))
             val authorId = primitives["userId"] ?: throw IllegalArgumentException("El ID del autor no puede ser nulo")
@@ -25,16 +33,4 @@ data class Post(
             return Post(id, authorId, content, createdAt)
         }
     }
-
-    fun toPrimitives(): Map<String, String> {
-        return mapOf(
-            "id" to this.id.toString(),
-            "userId" to this.userId,
-            "message" to this.message,
-            "createdAt" to this.createdAt
-        )
-    }
 }
-
-
-

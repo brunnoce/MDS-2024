@@ -2,20 +2,25 @@ package utn.methodology.infrastructure.http.router
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import utn.methodology.application.commandhandlers.CreatePostHandler
+import utn.methodology.application.commandhandlers.DeletePostHandler
 import utn.methodology.application.commandhandlers.PostValidationException
+import utn.methodology.application.commands.CreatePostCommand
+import utn.methodology.infrastructure.http.actions.CreatePostAction
+import utn.methodology.infrastructure.http.actions.DeletePostAction
 import utn.methodology.infrastructure.persistence.Repositories.MongoPostRepository
 import utn.methodology.infrastructure.persistence.connectToMongoDB
 import utn.methodology.infrastructure.persistence.MongoUserRepository
 
 fun Application.postRouter() {
-    val mongoDatabase = connectToMongoDB() // Conexión a la base de datos
-    val postRepository = MongoPostRepository(mongoDatabase) // Repositorio de posts
-    val userRepository = MongoUserRepository(mongoDatabase) // Repositorio de usuarios
+    val mongoDatabase = connectToMongoDB()
+    val postRepository = MongoPostRepository(mongoDatabase)
+    val userRepository = MongoUserRepository(mongoDatabase)
 
     val createPostHandler = CreatePostHandler(postRepository)
 
@@ -27,8 +32,15 @@ fun Application.postRouter() {
                 println("Cuerpo de la solicitud: $request")
 
                 if (userRepository.findOne(request.userId) != null) {
-                    val post = createPostHandler.createPost(request.userId, request.message)
-                    println("Post creado: $post")
+                    val command = CreatePostCommand(
+                        userId = request.userId,
+                        message = request.message
+                    )
+
+                    val createPostAction = CreatePostAction(createPostHandler)
+                    createPostAction.execute(command)
+
+                    println("Post creado: ${request.message}")
                     call.respond(HttpStatusCode.Created, mapOf("message" to "ok"))
                 } else {
                     println("No se encontró el usuario, por lo que no se puede agregar un post")
@@ -46,6 +58,9 @@ fun Application.postRouter() {
 
         get("/posts") {
             val userId = call.request.queryParameters["userId"]
+            val order = call.request.queryParameters["order"]?.uppercase() ?: "DESC" // ORDEN
+            val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 10 // LIMITE DE POST
+            val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0 // SKIP
 
             if (userId != null) {
                 if (userId.isBlank()) {
@@ -67,13 +82,33 @@ fun Application.postRouter() {
                 }
             } else {
                 try {
-                    val posts = postRepository.findAll()
+                    val posts = postRepository.findAll(order, limit, offset)
                     call.respond(HttpStatusCode.OK, posts)
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Error inesperado: ${e.localizedMessage}"))
                     println("Error al obtener todos los posts: ${e.localizedMessage}")
                     e.printStackTrace()
                 }
+            }
+        }
+
+        get("/posts/{id}") {
+            val postId = call.parameters["id"]
+
+            if (postId.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, "El ID del post es requerido.")
+                return@get
+            }
+            try {
+                val post = postRepository.findById(postId)
+                post?.let {
+                    call.respond(HttpStatusCode.OK, it)
+                } ?: throw NotFoundException("Post no encontrado con ID: $postId")
+            } catch (ex: NotFoundException) {
+                call.respond(HttpStatusCode.NotFound, ex.message ?: "Post no encontrado")
+            } catch (ex: Exception) {
+                println("Error al buscar el post: ${ex.localizedMessage}")
+                call.respond(HttpStatusCode.InternalServerError, "Error al procesar la solicitud: ${ex.localizedMessage}")
             }
         }
 
@@ -86,15 +121,13 @@ fun Application.postRouter() {
             }
 
             try {
-                val post = postRepository.findById(postId)
-                if (post == null) {
-                    call.respond(HttpStatusCode.NotFound, "Post no encontrado")
-                    return@delete
-                }
+                val deletePostAction = DeletePostAction(DeletePostHandler(postRepository))
 
-                postRepository.deleteById(postId)
+                deletePostAction.execute(call.parameters)
+
                 call.respond(HttpStatusCode.OK, mapOf("message" to "Post eliminado exitosamente"))
-
+            } catch (ex: NotFoundException) {
+                call.respond(HttpStatusCode.NotFound, ex.message ?: "Post no encontrado")
             } catch (ex: Exception) {
                 println("Error al eliminar el post: ${ex.localizedMessage}")
                 call.respond(HttpStatusCode.InternalServerError, "Error al procesar la solicitud: ${ex.localizedMessage}")
@@ -111,7 +144,6 @@ fun Application.postRouter() {
                     return@get
                 }
 
-                // Verificamos si el usuario sigue a alguien
                 val followedUserIds = user.following
                 if (followedUserIds.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent, "El usuario no sigue a nadie.")
@@ -119,8 +151,6 @@ fun Application.postRouter() {
                 }
 
                 println("Usuarios seguidos por $userId: $followedUserIds")
-
-                // Obtener los posts de los usuarios seguidos y ordenar por fecha descendente
                 val posts = postRepository.findPostsByUserIds(followedUserIds)
                 if (posts.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent, "No se encontraron posts de usuarios seguidos.")
