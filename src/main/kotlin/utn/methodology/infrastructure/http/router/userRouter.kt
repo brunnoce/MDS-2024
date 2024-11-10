@@ -82,7 +82,7 @@ fun Application.userRouter() {
                 val user = findUserByIdAction.execute(query)
 
                 if (user == null) {
-                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "Usuario no encontrado"))
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "Usuario no encontrado con ID: $id"))
                 } else {
                     call.respond(HttpStatusCode.OK, user.toPrimitives())
                 }
@@ -94,6 +94,7 @@ fun Application.userRouter() {
                 e.printStackTrace()
             }
         }
+
 
         post("/users/follow") {
             val params = call.receive<Map<String, String>>()

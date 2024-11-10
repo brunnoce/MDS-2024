@@ -10,7 +10,7 @@ class FindUserByIdHandler(
 ) {
     fun handle(query: FindUserByIdQuery): User {
         val user = userRepository.findOne(query.id)
-            ?: throw NotFoundException("Usuario no encontrado con username: ${query.id}")
+            ?: throw NotFoundException("Usuario no encontrado con Id: ${query.id}")
 
         return user
     }

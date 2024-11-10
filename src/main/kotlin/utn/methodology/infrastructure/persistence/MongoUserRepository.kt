@@ -3,6 +3,11 @@ package utn.methodology.infrastructure.persistence
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.UpdateOptions
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import org.bson.Document
 import utn.methodology.domain.contracts.UserRepository
 import utn.methodology.domain.entities.User
@@ -11,10 +16,26 @@ import java.util.*
 class MongoUserRepository(private val database: MongoDatabase) : UserRepository {
     private val collection: MongoCollection<Document> = database.getCollection("users")
 
+    // Crear el SerializersModule para registrar List<String>
+    private val module = SerializersModule {
+        contextual(ListSerializer(String.serializer()))  // Registrar el serializer para List<String>
+    }
+
+    // Configurar Json con el SerializersModule
+    private val json = Json {
+        serializersModule = module
+        ignoreUnknownKeys = true
+    }
+
     override fun save(user: User) {
         val options = UpdateOptions().upsert(true)
         val filter = Document("_id", user.id)
-        val update = Document("\$set", user.toPrimitives())
+
+        // Convertir el objeto User a JSON string y luego a Document
+        val jsonData = json.encodeToString(User.serializer(), user)
+        val document = Document.parse(jsonData)
+
+        val update = Document("\$set", document)
         collection.updateOne(filter, update, options)
     }
 
@@ -30,15 +51,9 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
 
         return document?.let {
             try {
-                User(
-                    id = it.getString("_id"),
-                    email = it.getString("email"),
-                    name = it.getString("name"),
-                    password = it.getString("password"),
-                    username = it.getString("username"),
-                    following = (it["following"] as? List<*>)?.mapNotNull { item -> item as? String }?.toMutableList() ?: mutableListOf(),
-                    followers = (it["followers"] as? List<*>)?.mapNotNull { item -> item as? String }?.toMutableList() ?: mutableListOf()
-                )
+                // Convertir el Document a JSON string y luego a objeto User
+                val jsonData = it.toJson()
+                json.decodeFromString<User>(jsonData)
             } catch (e: Exception) {
                 println("Error al mapear el documento: ${e.localizedMessage}")
                 null
@@ -51,16 +66,13 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
         val document = collection.find(filter).firstOrNull()
 
         return document?.let {
-            User(
-                id = it.getString("_id"),
-                email = it.getString("email"),
-                name = it.getString("name"),
-                password = it.getString("password"),
-                username = it.getString("username"),
-                following = it.getList("following", String::class.java)?.toMutableList() ?: mutableListOf(),
-                followers = it.getList("followers", String::class.java)?.toMutableList() ?: mutableListOf()
-
-            )
+            try {
+                val jsonData = it.toJson()
+                json.decodeFromString<User>(jsonData)
+            } catch (e: Exception) {
+                println("Error al mapear el documento: ${e.localizedMessage}")
+                null
+            }
         }
     }
 
@@ -70,8 +82,14 @@ class MongoUserRepository(private val database: MongoDatabase) : UserRepository 
     }
 
     fun findAll(): List<User> {
-        return collection.find().map {
-            User.fromPrimitives(it.toMap() as Map<String, String>)
+        return collection.find().mapNotNull {
+            try {
+                val jsonData = it.toJson()
+                json.decodeFromString<User>(jsonData)
+            } catch (e: Exception) {
+                println("Error al mapear el documento: ${e.localizedMessage}")
+                null
+            }
         }.toList()
     }
 
