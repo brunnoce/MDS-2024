@@ -1,4 +1,3 @@
-
 val kotlin_version: String by project
 val logback_version: String by project
 val mongo_version: String by project
@@ -24,18 +23,38 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm")
+    // Ktor dependencies
+    implementation("io.ktor:ktor-server-core-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-host-common:2.3.12")
+    implementation("io.ktor:ktor-server-status-pages:2.3.12")
+    implementation("io.ktor:ktor-server-netty-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-config-yaml:2.3.12")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:2.3.12")
+    implementation("io.ktor:ktor-serialization-jackson-jvm:2.3.12")
+
+    // MongoDB dependencies
     implementation("org.mongodb:mongodb-driver-core:$mongo_version")
     implementation("org.mongodb:mongodb-driver-sync:$mongo_version")
     implementation("org.mongodb:bson:$mongo_version")
-    implementation("io.ktor:ktor-server-host-common:2.0.0")
-    implementation("io.ktor:ktor-server-status-pages:2.0.0")
-    implementation("io.ktor:ktor-serialization-jackson-jvm")
-    implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("org.litote.kmongo:kmongo:4.8.0")
+
+    // Logging
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("io.ktor:ktor-server-config-yaml")
-    testImplementation("io.ktor:ktor-server-test-host-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    // Test dependencies
+    testImplementation("io.ktor:ktor-server-test-host-jvm:2.3.12")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+
+    // Kotlin Faker para test data
+    testImplementation("io.github.serpro69:kotlin-faker:1.16.0")
+
+    // Mockito para mocks
+    testImplementation("org.mockito:mockito-core:4.5.1")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

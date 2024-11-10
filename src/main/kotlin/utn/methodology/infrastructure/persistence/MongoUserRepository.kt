@@ -4,49 +4,86 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.UpdateOptions
 import org.bson.Document
+import utn.methodology.domain.contracts.UserRepository
 import utn.methodology.domain.entities.User
+import java.util.*
 
-class MongoUserRepository(private val database: MongoDatabase) {
-    private var collection: MongoCollection<Any>;
+class MongoUserRepository(private val database: MongoDatabase) : UserRepository {
+    private val collection: MongoCollection<Document> = database.getCollection("users")
 
-    init {
-        collection = database.getCollection("users") as MongoCollection<Any>;
-    }
-
-    fun save(user: User) {
-        val options = UpdateOptions().upsert(true);
-
-        val filter = Document("_id", user.getId()) // Usa el campo id como filter
+    override fun save(user: User) {
+        val options = UpdateOptions().upsert(true)
+        val filter = Document("_id", user.id)
         val update = Document("\$set", user.toPrimitives())
-
         collection.updateOne(filter, update, options)
     }
 
-    fun findOne(id: String): User? {
-        val filter = Document("_id", id);
-
-        val primitives = collection.find(filter).firstOrNull();
-
-        if (primitives == null) {
-            return null;
+    override fun findOne(id: String): User? {
+        val uuid = try {
+            UUID.fromString(id)
+        } catch (e: IllegalArgumentException) {
+            return null
         }
 
-        return User.fromPrimitives(primitives as Map<String, String>)
+        val filter = Document("_id", uuid.toString())
+        val document = collection.find(filter).firstOrNull()
+
+        return document?.let {
+            try {
+                User(
+                    id = it.getString("_id"),
+                    email = it.getString("email"),
+                    name = it.getString("name"),
+                    password = it.getString("password"),
+                    username = it.getString("username"),
+                    following = (it["following"] as? List<*>)?.mapNotNull { item -> item as? String }?.toMutableList() ?: mutableListOf(),
+                    followers = (it["followers"] as? List<*>)?.mapNotNull { item -> item as? String }?.toMutableList() ?: mutableListOf()
+                )
+            } catch (e: Exception) {
+                println("Error al mapear el documento: ${e.localizedMessage}")
+                null
+            }
+        }
     }
 
-    fun findAll(): List<User> {
+    override fun findByUsername(username: String): User? {
+        val filter = Document("username", Document("\$regex", "^$username\$").append("\$options", "i"))
+        val document = collection.find(filter).firstOrNull()
 
-        val primitives = collection.find().map { it as Document }.toList();
+        return document?.let {
+            User(
+                id = it.getString("_id"),
+                email = it.getString("email"),
+                name = it.getString("name"),
+                password = it.getString("password"),
+                username = it.getString("username"),
+                following = it.getList("following", String::class.java)?.toMutableList() ?: mutableListOf(),
+                followers = it.getList("followers", String::class.java)?.toMutableList() ?: mutableListOf()
 
-        return primitives.map {
-            User.fromPrimitives(it.toMap() as Map<String, String>)
-        };
+            )
+        }
     }
 
-    fun delete(user: User) {
-        val filter = Document("_id", user.getId());
-
+    override fun delete(user: User) {
+        val filter = Document("_id", user.id)
         collection.deleteOne(filter)
     }
 
+    fun findAll(): List<User> {
+        return collection.find().map {
+            User.fromPrimitives(it.toMap() as Map<String, String>)
+        }.toList()
+    }
+
+    fun addFollower(userId: String, followerId: String) {
+        val filter = Document("_id", userId)
+        val update = Document("\$addToSet", Document("followers", followerId))
+        collection.updateOne(filter, update)
+    }
+
+    fun addFollowing(userId: String, followingId: String) {
+        val filter = Document("_id", userId)
+        val update = Document("\$addToSet", Document("following", followingId))
+        collection.updateOne(filter, update)
+    }
 }
