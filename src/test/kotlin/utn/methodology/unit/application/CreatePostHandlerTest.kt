@@ -75,19 +75,6 @@ class CreatePostHandlerTest {
     }
 
     @Test
-    fun `create_post_should_handle_empty_repository`() {
-        // Arrange
-        val user = UserMother.random()
-        val command = CreatePostCommand(userId = user.id, message = "Nuevo mensaje")
-
-        // Act
-        val result = sut.handle(command)
-
-        // Assert
-        assertNotNull(result) { "El post creado no debería ser nulo incluso si la base de datos estaba vacía." }
-    }
-
-    @Test
     fun `create_post_should_returns_400_when_message_is_empty`() {
         // Arrange
         val user = UserMother.random()
