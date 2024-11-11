@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="utn.methodology.unit.application.CreatePostHandlerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-11-08T15:51:18" hostname="BRUNOCE" time="0.533">
+<testsuite name="utn.methodology.unit.application.CreatePostHandlerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-11T13:29:20" hostname="BRUNOCE" time="0.888">
   <properties/>
-  <testcase name="create_post_should_returns_201()" classname="utn.methodology.unit.application.CreatePostHandlerTest" time="0.529"/>
-  <testcase name="create_post_should_returns_400()" classname="utn.methodology.unit.application.CreatePostHandlerTest" time="0.003"/>
+  <testcase name="create_post_should_returns_400_when_message_is_empty()" classname="utn.methodology.unit.application.CreatePostHandlerTest" time="0.888"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -2,14 +2,15 @@ package utn.methodology.unit.application
 
 import utn.methodology.application.commandhandlers.CreatePostHandler
 import utn.methodology.application.commandhandlers.PostValidationException
+import utn.methodology.application.commands.CreatePostCommand
 import utn.methodology.shared.mocks.MockPostRepository
 import utn.methodology.shared.mocks.MockUserRepository
 import utn.methodology.shared.mothers.PostMother
 import utn.methodology.shared.mothers.UserMother
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 
 class CreatePostHandlerTest {
 
@@ -21,7 +22,7 @@ class CreatePostHandlerTest {
     fun beforeEach() {
         mockPostRepository.clean()
         mockUserRepository.clean()
-        sut = CreatePostHandler(mockPostRepository)
+        sut = CreatePostHandler(mockPostRepository, mockUserRepository)
     }
 
     @Test
@@ -30,29 +31,72 @@ class CreatePostHandlerTest {
         val user = UserMother.random()
         mockUserRepository.save(user)
 
-        val post = PostMother.withContent(user.id, "Este es un mensaje de prueba que no excede los 500 caracteres.")
+        // Usamos PostMother.random para generar un post aleatorio
+        val post = PostMother.random(user.id)
+        val command = CreatePostCommand(userId = post.userId, message = post.message)
 
         // Act
-        sut.createPost(post.userId, post.message)
+        val result = sut.handle(command)
 
-        // Assertions
-        val posts = mockPostRepository.findByOwnerId(user.id)
-        assert(posts.size == 1) { "El post debería haberse guardado." }
-        assert(posts[0].message == post.message) { "El contenido del post no coincide." }
-        assert(posts[0].userId == post.userId) { "El ID del usuario no coincide." }
+        // Assert
+        val savedPosts = mockPostRepository.findByOwnerId(user.id)
+        assert(savedPosts.size == 1) { "El post debería haberse guardado correctamente." }
+        val savedPost = savedPosts.first()
+        assertNotNull(savedPost) { "El post guardado no debería ser nulo." }
+        assert(savedPost.message == post.message) { "El contenido del post no coincide." }
+        assert(savedPost.userId == post.userId) { "El ID del usuario no coincide." }
+        assert(result.id == savedPost.id) { "El ID del post retornado no coincide con el guardado." }
     }
 
     @Test
-    fun `create_post_should_returns_400`() {
+    fun `create_post_should_returns_400_when_message_exceeds_500_characters`() {
         // Arrange
         val user = UserMother.random()
         mockUserRepository.save(user)
 
-        val longPost = PostMother.withContent(user.id, "a".repeat(501)) // +500 caracteres
+        val longMessage = "a".repeat(501)
+        val command = CreatePostCommand(userId = user.id, message = longMessage)
 
         // Act & Assert
         assertFailsWith<PostValidationException> {
-            sut.createPost(longPost.userId, longPost.message)
+            sut.handle(command)
+        }
+    }
+
+    @Test
+    fun `create_post_should_returns_400_when_userId_is_invalid`() {
+        // Arrange
+        val invalidCommand = CreatePostCommand(userId = "invalid-user-id", message = "Mensaje válido")
+
+        // Act & Assert
+        assertFailsWith<IllegalArgumentException> {
+            sut.handle(invalidCommand)
+        }
+    }
+
+    @Test
+    fun `create_post_should_handle_empty_repository`() {
+        // Arrange
+        val user = UserMother.random()
+        val command = CreatePostCommand(userId = user.id, message = "Nuevo mensaje")
+
+        // Act
+        val result = sut.handle(command)
+
+        // Assert
+        assertNotNull(result) { "El post creado no debería ser nulo incluso si la base de datos estaba vacía." }
+    }
+
+    @Test
+    fun `create_post_should_returns_400_when_message_is_empty`() {
+        // Arrange
+        val user = UserMother.random()
+        mockUserRepository.save(user)
+        val command = CreatePostCommand(userId = user.id, message = "")
+
+        // Act & Assert
+        assertFailsWith<PostValidationException> {
+            sut.handle(command)
         }
     }
 }

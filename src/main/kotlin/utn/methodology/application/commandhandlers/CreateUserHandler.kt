@@ -14,6 +14,10 @@ class CreateUserHandler(
         require(command.email.isNotBlank()) { "Se requiere el email" }
         require(command.password.isNotBlank()) { "Se requiere la contraseña" }
 
+        require(userRepository.findByUsername(command.username) == null) {
+            throw IllegalArgumentException("El username ya está en uso")
+        }
+
         val user = User(
             id = UUID.randomUUID().toString(),
             name = command.name,

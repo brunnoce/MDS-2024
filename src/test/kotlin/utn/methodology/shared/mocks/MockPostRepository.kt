@@ -28,6 +28,14 @@ class MockPostRepository : PostRepository {
         }
     }
 
+    override fun findById(postId: String): Post? {
+        return posts.find { it.id.toString() == postId }
+    }
+
+    override fun findPostsByUserIds(userIds: List<String>): List<Post> {
+        return posts.filter { it.userId in userIds }.sortedByDescending { it.createdAt }
+    }
+
     fun clean() {
         posts.clear()
     }

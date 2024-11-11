@@ -25,7 +25,7 @@ fun Application.postRouter() {
     val postRepository = MongoPostRepository(mongoDatabase)
     val userRepository = MongoUserRepository(mongoDatabase)
 
-    val createPostHandler = CreatePostHandler(postRepository)
+    val createPostHandler = CreatePostHandler(postRepository, userRepository)
 
     routing {
         post("/posts") {
@@ -134,34 +134,6 @@ fun Application.postRouter() {
             } catch (ex: Exception) {
                 println("Error al eliminar el post: ${ex.localizedMessage}")
                 call.respond(HttpStatusCode.InternalServerError, "Error al procesar la solicitud: ${ex.localizedMessage}")
-            }
-        }
-
-        get("/posts/user/{userId}") {
-            val userId = call.parameters["userId"] ?: return@get call.respond(HttpStatusCode.BadRequest, "UserId es requerido")
-
-            try {
-                val user = userRepository.findOne(userId)
-                if (user == null) {
-                    call.respond(HttpStatusCode.NotFound, "Usuario no encontrado")
-                    return@get
-                }
-
-                val followedUserIds = user.following
-                if (followedUserIds.isEmpty()) {
-                    call.respond(HttpStatusCode.NoContent, "El usuario no sigue a nadie.")
-                    return@get
-                }
-
-                println("Usuarios seguidos por $userId: $followedUserIds")
-                val posts = postRepository.findPostsByUserIds(followedUserIds)
-                if (posts.isEmpty()) {
-                    call.respond(HttpStatusCode.NoContent, "No se encontraron posts de usuarios seguidos.")
-                } else {
-                    call.respond(HttpStatusCode.OK, posts.map { it.toPrimitives() })
-                }
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, "Error al obtener los posts: ${e.localizedMessage}")
             }
         }
 
