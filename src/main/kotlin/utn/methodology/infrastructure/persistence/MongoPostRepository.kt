@@ -93,7 +93,7 @@ class MongoPostRepository(private val database: MongoDatabase) : PostRepository 
         }
     }
 
-    fun findPostsByUserIds(userIds: List<String>): List<Post> {
+    override fun findPostsByUserIds(userIds: List<String>): List<Post> {
         if (userIds.isEmpty()) {
             println("No hay usuarios seguidos para la consulta.")
             return emptyList()

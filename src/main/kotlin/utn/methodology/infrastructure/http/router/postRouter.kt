@@ -11,8 +11,11 @@ import utn.methodology.application.commandhandlers.CreatePostHandler
 import utn.methodology.application.commandhandlers.DeletePostHandler
 import utn.methodology.application.commandhandlers.PostValidationException
 import utn.methodology.application.commands.CreatePostCommand
+import utn.methodology.application.queries.ShowMyFeedQuery
+import utn.methodology.application.queryhandlers.ShowMyFeedHandler
 import utn.methodology.infrastructure.http.actions.CreatePostAction
 import utn.methodology.infrastructure.http.actions.DeletePostAction
+import utn.methodology.infrastructure.http.actions.ShowMyFeedAction
 import utn.methodology.infrastructure.persistence.Repositories.MongoPostRepository
 import utn.methodology.infrastructure.persistence.connectToMongoDB
 import utn.methodology.infrastructure.persistence.MongoUserRepository
@@ -162,6 +165,29 @@ fun Application.postRouter() {
             }
         }
 
+        get("/posts/user/{userId}") {
+            val userId = call.parameters["userId"] ?: return@get call.respond(HttpStatusCode.BadRequest, "UserId es requerido")
+
+            try {
+                val query = ShowMyFeedQuery(userId)
+                val handler = ShowMyFeedHandler(userRepository, postRepository)
+                val action = ShowMyFeedAction(handler)
+
+                val posts = action.execute(query)
+
+                if (posts.isEmpty()) {
+                    call.respond(HttpStatusCode.NoContent, "No se encontraron posts de los usuarios seguidos.")
+                } else {
+                    call.respond(HttpStatusCode.OK, posts.map { it.toPrimitives() })
+                }
+            } catch (e: IllegalArgumentException) {
+                call.respond(HttpStatusCode.BadRequest, e.message ?: "Solicitud inválida")
+            } catch (e: NotFoundException) {
+                call.respond(HttpStatusCode.NotFound, e.message ?: "Usuario no encontrado")
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Error al obtener los posts: ${e.localizedMessage}")
+            }
+        }
     }
 }
 

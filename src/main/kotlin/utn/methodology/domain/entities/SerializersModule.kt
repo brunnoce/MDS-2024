@@ -7,7 +7,6 @@ import kotlinx.serialization.modules.contextual
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 
-
 // Define un SerializersModule para registrar los tipos polimórficos
 val module = SerializersModule {
     contextual(ListSerializer(String.serializer())) // Registrar el serializer para List<String>

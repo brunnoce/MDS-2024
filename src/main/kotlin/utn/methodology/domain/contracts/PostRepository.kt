@@ -8,4 +8,5 @@ interface PostRepository {
     fun findByFollows(followIds: List<String>): List<Post>
     fun deleteById(postId: String)
     fun findById(postId: String): Post?
+    fun findPostsByUserIds(userIds: List<String>): List<Post>
 }
